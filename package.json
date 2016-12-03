@@ -1,0 +1,15 @@
+{
+  "name": "fcc-pomodoro-clock",
+  "version": "0.1.0",
+  "description": "My Pomodoro Clock project for Free Code Camp.\n\n# Frameworks Used:\n\n* Skeleton CSS",
+  "main": "index.html",
+  "scripts": {
+    "start": "browser-sync start -s -f index.html src --no-ui --no-notify",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matthew R. Mattson",
+  "license": "MIT",
+  "devDependencies": {
+    "browser-sync": "^2.18.2"
+  }
+}

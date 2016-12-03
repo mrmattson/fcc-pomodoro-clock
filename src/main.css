@@ -1,0 +1,42 @@
+.tagline {
+  color: blue;
+}
+
+.tagline a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.row {
+  text-align: center;
+}
+
+.control-label {
+  color: gray;
+}
+
+.control-element, .display-element {
+  display: inline-block;
+  font-size: 4rem;
+  width: 50px;
+}
+
+.timer-outline {
+  margin: auto;  /* center the div */
+  width: 300px;
+  height: 300px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 50%;
+}
+
+.timer-label {
+  margin-top: 50px;
+  line-height: 2;
+  font-size: 50px;
+}
+
+.timer-countdown {
+  line-height: 2;
+  font-size: 50px;
+}

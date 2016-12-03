@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>FCC - Pomodoro</title>
+  <link rel="stylesheet" href="src/normalize.css" type="text/css">
+  <link rel="stylesheet" href="src/skeleton.css" type="text/css">
+  <link rel="stylesheet" href="src/main.css" type="text/css">
+</head>
+<body>
+
+  <!-- .container is main centered wrapper -->
+  <div class="container">
+
+    <!-- columns should be the immediate child of a .row -->
+    <div class="row">
+      <h1>Pomodoro Clock</h1>
+      <h6 class="tagline">A <a href="https://www.freecodecamp.com/" target="_blank">Free Code Camp</a> Project</h6>
+    </div>
+
+    <div class="row">
+      <div class="six columns">
+        <div class="control-label">BREAK LENGTH</div>
+        <span class="control-element">-</span>
+        <span class="display-element">5</span>
+        <span class="control-element">+</span>
+      </div>
+      <div class="six columns">
+        <div class="control-label">SESSION LENGTH</div>
+        <span class="control-element">-</span>
+        <span class="display-element">25</span>
+        <span class="control-element">+</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="twelve columns">
+        <div class="timer-outline">
+          <div class="timer-label">Session</div>
+          <div class="timer-countdown">25</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="text/javascript" src="src/app.js"></script>
+</body>
+</html>
