@@ -1,5 +1,10 @@
+.title {
+  margin-bottom: 0;  /* set margin-bottom via tagline margin-top */
+}
+
 .tagline {
   color: blue;
+  margin-top: 0.25rem;
 }
 
 .tagline a {
@@ -9,20 +14,22 @@
 
 .row {
   text-align: center;
+  margin-top: 3rem;
 }
 
 .control-label {
   color: gray;
 }
 
-.control-element, .display-element {
+.time-adjust, .time-adjust-display {
   display: inline-block;
   font-size: 4rem;
   width: 50px;
 }
 
 .timer-outline {
-  margin: auto;  /* center the div */
+  margin-left: auto;  /* center the div */
+  margin-right: auto;  /* center the div */
   width: 300px;
   height: 300px;
   border-width: 1px;
@@ -39,4 +46,8 @@
 .timer-countdown {
   line-height: 2;
   font-size: 50px;
+}
+
+.start-stop-label {
+  font-size: 3rem;
 }

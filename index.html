@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>FCC - Pomodoro</title>
+  <title>FCC - Pomodoro Clock</title>
   <link rel="stylesheet" href="src/normalize.css" type="text/css">
   <link rel="stylesheet" href="src/skeleton.css" type="text/css">
   <link rel="stylesheet" href="src/main.css" type="text/css">
@@ -14,31 +14,41 @@
 
     <!-- columns should be the immediate child of a .row -->
     <div class="row">
-      <h1>Pomodoro Clock</h1>
+      <h1 class="title">Pomodoro Clock</h1>
       <h6 class="tagline">A <a href="https://www.freecodecamp.com/" target="_blank">Free Code Camp</a> Project</h6>
     </div>
 
     <div class="row">
       <div class="six columns">
         <div class="control-label">BREAK LENGTH</div>
-        <span class="control-element">-</span>
-        <span class="display-element">5</span>
-        <span class="control-element">+</span>
+        <span class="time-adjust ctrl-time-adjust">-</span>
+        <span class="time-adjust-display ctrl-time-adjust-display">5</span>
+        <span class="time-adjust ctrl-time-adjust">+</span>
       </div>
       <div class="six columns">
         <div class="control-label">SESSION LENGTH</div>
-        <span class="control-element">-</span>
-        <span class="display-element">25</span>
-        <span class="control-element">+</span>
+        <span class="time-adjust ctrl-time-adjust">-</span>
+        <span class="time-adjust-display ctrl-time-adjust-display">25</span>
+        <span class="time-adjust ctrl-time-adjust">+</span>
+      </div>
+    </div>
+
+    <!-- div overlay -->
+    <!-- http://stackoverflow.com/questions/2941189/how-to-overlay-one-div-over-another-div -->
+    <!-- Progress bar -->
+    <!-- http://bl.ocks.org/stephenhay/raw/1086250/ -->
+    <div class="row">
+      <div class="twelve columns">
+        <div class="timer-outline ctrl-timer-outline ctrl-start-stop">
+          <div class="timer-label ctrl-timer-label">Session</div>
+          <div class="timer-countdown ctrl-timer-countdown">25</div>
+        </div>
       </div>
     </div>
 
     <div class="row">
       <div class="twelve columns">
-        <div class="timer-outline">
-          <div class="timer-label">Session</div>
-          <div class="timer-countdown">25</div>
-        </div>
+        <div class="start-stop-label ctrl-start-stop-label ctrl-start-stop">Press to Start</div>
       </div>
     </div>
 
