@@ -1,5 +1,12 @@
 function adjustTime(whichTime, amount) {
-  console.log('adjustTime: ' + whichTime + ' by: ' + amount);
+  var currentTime = parseInt(document.querySelector('#ctrl-' + whichTime + '-display').innerText, 10);
+  var newTime = currentTime + amount;
+
+  if (newTime < 1) {
+    newTime = 1;
+  }
+
+  document.querySelector('#ctrl-' + whichTime + '-display').innerText = newTime;
 }
 
 

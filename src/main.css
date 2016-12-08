@@ -24,7 +24,12 @@
 .time-adjust, .time-adjust-display {
   display: inline-block;
   font-size: 4rem;
-  width: 50px;
+  padding: 0;
+  border: 0;
+}
+
+.time-adjust-display {
+  width: 70px;
 }
 
 .timer-outline {
