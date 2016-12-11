@@ -1,3 +1,6 @@
+var SESSION = 'session';
+var BREAK = 'break';
+
 function adjustTime(timer, whichTime, amount) {
   var newTime = timer[whichTime] + amount;
   if (newTime < 1) {
@@ -5,65 +8,135 @@ function adjustTime(timer, whichTime, amount) {
   }
   timer[whichTime] = newTime;
 
-  updateDisplay(timer);
+  if (timer.remaining.type === whichTime) {
+    resetTimer(timer);
+  }
+
+  render(timer);
 }
 
 
 function startStopTimer(timer) {
-  console.log('start/stop timer');
+  if (timer.running) {
+    stopTimer(timer);
+  } else {
+    startTimer(timer);
+  }
 
-  timer.running = !timer.running;
-
-  updateDisplay(timer);
+  updateTimer(timer);
 }
 
 
-function updateDisplay(timer) {
-  console.log('Timer object:');
-  console.log(timer);
+function startTimer(timer) {
+  // Manipulates the state in-place!
 
-  var SESSION = 'session';
-  var BREAK = 'break';
+  if (timer.remaining.type === BREAK) {
+    if (timer.remaining.min <= 0 && timer.remaining.sec <= 0) {
+      resetTimer(timer);
+    }
+  }
+
+  var endTimeMilliseconds = Date.now()
+  endTimeMilliseconds += timer.remaining.min * 60 * 1000;  // add minutes
+  endTimeMilliseconds += timer.remaining.sec * 1000;  // add seconds
+  timer.endTime = new Date();
+  timer.endTime.setTime(endTimeMilliseconds);
+
+  // Set display update interval
+  timer.updateIntervalFunc = window.setInterval(updateTimer.bind(this, timer), 100);
+
+  timer.running = true;
+}
+
+
+function stopTimer(timer) {
+  // Manipulates the state in-place!
+
+  // Clear update display interval function
+  if (timer.updateIntervalFunc !== null) {
+    window.clearInterval(timer.updateIntervalFunc);
+    timer.updateIntervalFunc = null;
+  }
+
+  timer.running = false;
+  timer.endTime = null;
+}
+
+
+function resetTimer(timer) {
+  // Manipulates the state in-place!
+
+  if (timer.running) {
+    stopTimer(timer);
+  }
+
+  // Reset time remaining to session inputs
+  timer.remaining.type = SESSION;
+  timer.remaining.min = timer.session;
+  timer.remaining.sec = 0;
+}
+
+
+function updateTimer(timer) {
+  // Manipulates the state in-place!
+
+  if (timer.running) {
+    // Switch timer if needed
+    var timeRemainingSeconds = (timer.endTime - Date.now()) / 1000;
+    if (timeRemainingSeconds <= 0) {
+      timerReachedZero(timer);
+    }
+
+    // Calculate remaining time
+    timer.remaining.min = Math.floor(timeRemainingSeconds / 60);
+    if (timer.remaining.min < 0) {
+      timer.remaining.min = 0;
+    }
+    timer.remaining.sec = Math.floor(timeRemainingSeconds - (timer.remaining.min * 60));
+    if (timer.remaining.sec < 0) {
+      timer.remaining.sec = 0;
+    }
+
+  }
+
+  render(timer);
+}
+
+
+function timerReachedZero(timer) {
+  // Manipulates the state in-place!
+
+  // Always stop the timer
+  stopTimer(timer);
+
+  if (timer.remaining.type === SESSION) {
+    // Play the sound
+    document.getElementById('ctrl-notify-sound').play();
+
+    // Restart the timer as a break if it was a session
+    timer.remaining.type = BREAK;
+    timer.remaining.min = timer.break;
+    timer.remaining.sec = 0;
+
+    startTimer(timer);
+
+  } else if (timer.remaining.type === BREAK) {
+    // Play the sound
+    document.getElementById('ctrl-notify-sound').play();
+  }
+}
+
+
+function render(timer) {
 
   // Session & Break time displays
   document.querySelector('#ctrl-break-display').innerText = timer.break;
   document.querySelector('#ctrl-session-display').innerText = timer.session;
 
-  // Update time remaining state
-  if (timer.running) {
-    if (timer.endTime == null) {
-      // Start timer
-      var endTimeMilliseconds = Date.now()
-      endTimeMilliseconds += timer.remaining.min * 60 * 1000;  // add minutes
-      endTimeMilliseconds += timer.remaining.sec * 1000;  // add seconds
-      timer.endTime = new Date();
-      timer.endTime.setTime(endTimeMilliseconds);
-
-      // Set display update interval
-      timer.updateIntervalFunc = window.setInterval(updateDisplay.bind(this, timer), 100);
-    }
-    var timeRemainingSeconds = (timer.endTime - Date.now()) / 1000;
-    timer.remaining.min = Math.floor(timeRemainingSeconds / 60);
-    timer.remaining.sec = Math.floor(timeRemainingSeconds - (timer.remaining.min * 60));
-    alert('timer.remaining.sec is less than zero! timeRemainingSeconds: ' + timeRemainingSeconds);
-
-  } else if (timer.endTime !== null) {
-    // Stop timer
-
-    // Clear update display interval function
-    window.clearInterval(timer.updateIntervalFunc);
-    timer.updateIntervalFunc = null;
-
-    // Reset time remaining to session inputs
-    // This needs work: how to we continue a timer that is already going?
-    // Answer: if break or session time have change?
-    // Answer 2: this goes in a reset button?
-    timer.remaining.type = SESSION;
-    timer.remaining.min = timer.session;
-    timer.remaining.sec = 0;
-
-    timer.endTime = null;
-  }
+  // Timer type label
+  var timerType = timer.remaining.type;
+  timerType = timerType.substr(0, 1).toUpperCase() + timerType.slice(1);
+  document.querySelector('.ctrl-timer-label').innerText = timerType;
 
   // Time remaining display
   var timerMin = "" + timer.remaining.min;
@@ -74,29 +147,36 @@ function updateDisplay(timer) {
     timerSec += timer.remaining.sec;
   }
   document.querySelector('.ctrl-timer-countdown').innerText = timerMin + ":" + timerSec;
+
+  // Start/Stop label switching
+  if (timer.running) {
+    document.querySelector('.ctrl-start-stop-label').innerText = "Press to Stop";
+  } else {
+    document.querySelector('.ctrl-start-stop-label').innerText = "Press to Start";
+  }
 }
 
 
-function autorun()
-{
+function setupApp() {
+  // Initial state
   var wrappedTimer = {
     break: 5,
-    session:25,
+    session: 25,
     running: false,
     endTime: null,
     remaining: {
-      type: 'session',
-      min: 24,
-      sec: 5
+      type: SESSION,
+      min: 25,
+      sec: 0
     },
     updateIntervalFunc: null
   };
 
   // Session & Break time adjustment buttons
-  document.querySelector('#ctrl-break-adjust-minus').addEventListener('click', adjustTime.bind(this, wrappedTimer, 'break', -1));
-  document.querySelector('#ctrl-break-adjust-plus').addEventListener('click', adjustTime.bind(this, wrappedTimer, 'break', 1));
-  document.querySelector('#ctrl-session-adjust-minus').addEventListener('click', adjustTime.bind(this, wrappedTimer, 'session', -1));
-  document.querySelector('#ctrl-session-adjust-plus').addEventListener('click', adjustTime.bind(this, wrappedTimer, 'session', 1));
+  document.querySelector('#ctrl-break-adjust-minus').addEventListener('click', adjustTime.bind(this, wrappedTimer, BREAK, -1));
+  document.querySelector('#ctrl-break-adjust-plus').addEventListener('click', adjustTime.bind(this, wrappedTimer, BREAK, 1));
+  document.querySelector('#ctrl-session-adjust-minus').addEventListener('click', adjustTime.bind(this, wrappedTimer, SESSION, -1));
+  document.querySelector('#ctrl-session-adjust-plus').addEventListener('click', adjustTime.bind(this, wrappedTimer, SESSION, 1));
 
   // Start/Stop buttons
   var startStopElements = document.querySelectorAll('.ctrl-start-stop')
@@ -104,7 +184,13 @@ function autorun()
     element.addEventListener('click', startStopTimer.bind(this, wrappedTimer));
   }.bind(this));
 
-  updateDisplay(wrappedTimer);
+  render(wrappedTimer);
+}
+
+
+function autorun()
+{
+  setupApp();
 }
 
 if (document.addEventListener) document.addEventListener("DOMContentLoaded", autorun, false);
