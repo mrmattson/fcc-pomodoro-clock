@@ -1,5 +1,6 @@
 var SESSION = 'session';
 var BREAK = 'break';
+var UPDATE_INTERVAL = 100;  // milliseconds
 
 function adjustTime(timer, whichTime, amount) {
   var newTime = timer[whichTime] + amount;
@@ -43,7 +44,7 @@ function startTimer(timer) {
   timer.endTime.setTime(endTimeMilliseconds);
 
   // Set display update interval
-  timer.updateIntervalFunc = window.setInterval(updateTimer.bind(this, timer), 100);
+  timer.updateIntervalFunc = window.setInterval(updateTimer.bind(this, timer), UPDATE_INTERVAL);
 
   timer.running = true;
 }
